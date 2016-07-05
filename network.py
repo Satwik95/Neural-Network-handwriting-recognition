@@ -4,31 +4,18 @@ network.py
 
 A module to implement the stochastic gradient descent learning
 algorithm for a feedforward neural network.  Gradients are calculated
-using backpropagation.  Note that I have focused on making the code
-simple, easily readable, and easily modifiable.  It is not optimized,
-and omits many desirable features.
+using backpropagation. 
 """
-
-#### Libraries
-# Standard library
 import random
-
-# Third-party libraries
 import numpy as np
 
 class Network(object):
 
     def __init__(self, sizes):
-        """The list ``sizes`` contains the number of neurons in the
-        respective layers of the network.  For example, if the list
-        was [2, 3, 1] then it would be a three-layer network, with the
-        first layer containing 2 neurons, the second layer 3 neurons,
-        and the third layer 1 neuron.  The biases and weights for the
-        network are initialized randomly, using a Gaussian
-        distribution with mean 0, and variance 1.  Note that the first
-        layer is assumed to be an input layer, and by convention we
-        won't set any biases for those neurons, since biases are only
-        ever used in computing the outputs from later layers."""
+        """ Here we create the neurons
+        -->self.weights is an array of matrices with random values of 'w' bw the n and n-1 layers
+        -->self.biases is an array of matrices with random values of 'b' bw the n and n-1 layers
+            apart from the first layer i.e the inpurt layer and are not neurons"""
         self.num_layers = len(sizes)
         self.sizes = sizes
         self.biases = [np.random.randn(y, 1) for y in sizes[1:]]
@@ -43,15 +30,19 @@ class Network(object):
 
     def SGD(self, training_data, epochs, mini_batch_size, eta,
             test_data=None):
-        """Train the neural network using mini-batch stochastic
-        gradient descent.  The ``training_data`` is a list of tuples
-        ``(x, y)`` representing the training inputs and the desired
-        outputs.  The other non-optional parameters are
-        self-explanatory.  If ``test_data`` is provided then the
-        network will be evaluated against the test data after each
-        epoch, and partial progress printed out.  This is useful for
-        tracking progress, but slows things down substantially."""
-        if test_data: n_test = len(test_data)
+        """Training the network
+            -->loop 'epochs' number of times if test_data present
+            -->decide the mini-batches
+            -->update mini_batch in the set of mini-batches
+            -->print the epoch result as (successful/total)
+            *** for each mini_batch we apply a single step of gradient descent. This is done by the code
+             self.update_mini_batch(mini_batch, eta), which updates the network weights 
+            and biases according to a single iteration of gradient descent, using just the training data in mini_batch."""
+         
+         k= 0 # not required 
+
+        if test_data: 
+            n_test = len(test_data)
         n = len(training_data)
         for j in xrange(epochs):
             random.shuffle(training_data)
@@ -61,16 +52,29 @@ class Network(object):
             for mini_batch in mini_batches:
                 self.update_mini_batch(mini_batch, eta)
             if test_data:
-                print "Epoch {0}: {1} / {2}".format(
+                print (Epoch {}: {} / {}).format(
                     j, self.evaluate(test_data), n_test)
             else:
-                print "Epoch {0} complete".format(j)
+                print (Epoch {} complete).format(j)
 
     def update_mini_batch(self, mini_batch, eta):
         """Update the network's weights and biases by applying
         gradient descent using backpropagation to a single mini batch.
         The ``mini_batch`` is a list of tuples ``(x, y)``, and ``eta``
-        is the learning rate."""
+        is the learning rate.
+ 
+        -->wk→wk′=wk−η/m(∂C∂/wk)  { Understand using the Graph--we are going down the slope by 'η'times  }
+        -->bl→bl′=bl−η/m(∂C/∂bl)
+
+        where m = len(mini-batch-size)
+
+        -->dividing the summation by 'm' means we are finding the average over the sample 
+           training data set.
+ 
+        By repeatedly applying this update rule we can "roll down the hill", and hopefully find 
+        a minimum of the cost function. In other words, this is a rule which can be used to learn 
+        in a neural network."""
+
         nabla_b = [np.zeros(b.shape) for b in self.biases]
         nabla_w = [np.zeros(w.shape) for w in self.weights]
         for x, y in mini_batch:
