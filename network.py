@@ -39,7 +39,7 @@ class Network(object):
              self.update_mini_batch(mini_batch, eta), which updates the network weights 
             and biases according to a single iteration of gradient descent, using just the training data in mini_batch."""
          
-         k= 0 # not required 
+        
 
         if test_data: 
             n_test = len(test_data)
@@ -52,10 +52,10 @@ class Network(object):
             for mini_batch in mini_batches:
                 self.update_mini_batch(mini_batch, eta)
             if test_data:
-                print (Epoch {}: {} / {}).format(
+                print ("Epoch {}: {} / {}").format(
                     j, self.evaluate(test_data), n_test)
             else:
-                print (Epoch {} complete).format(j)
+                print ("Epoch {} complete").format(j)
 
     def update_mini_batch(self, mini_batch, eta):
         """Update the network's weights and biases by applying
@@ -63,10 +63,7 @@ class Network(object):
         The ``mini_batch`` is a list of tuples ``(x, y)``, and ``eta``
         is the learning rate.
  
-        -->wk→wk′=wk−η/m(∂C∂/wk)  { Understand using the Graph--we are going down the slope by 'η'times  }
-        -->bl→bl′=bl−η/m(∂C/∂bl)
-
-        where m = len(mini-batch-size)
+      
 
         -->dividing the summation by 'm' means we are finding the average over the sample 
            training data set.
