@@ -66,6 +66,12 @@ def load_data_wrapper():
     turn out to be the most convenient for use in our neural network
     code."""
     tr_d, va_d, te_d = load_data()
+    #the image is basically a square matrix of 28*28 px 
+    # so for the first image in the training set we reshape it into a row of 784 collumns 
+    # and these become the first set of inputs for the input layer
+    # then we vectorize the result for y
+    # and pair the input and result and make it a list of tuples in the training_data
+    # similarly for the validation and test sets 
     training_inputs = [np.reshape(x, (784, 1)) for x in tr_d[0]]
     training_results = [vectorized_result(y) for y in tr_d[1]]
     training_data = zip(training_inputs, training_results)
